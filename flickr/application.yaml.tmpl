@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ksphere-demo-flickr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ksphere-demo-flickr
+  template:
+    metadata:
+      labels:
+        app: ksphere-demo-flickr
+    spec:
+      containers:
+      - image: "$({ .imageName })"
+        name: ksphere-demo-flickr
+        command: ["python"]
+        args: ["flickr.py"]
+        env:
+        - name: MINIO_ENDPOINT
+          value: "http://minio-service.default.svc.cluster.local:9000"
+        - name: MINIO_USERNAME
+          value: "minio"
+        - name: MINIO_PASSWORD
+          value: "minio123"
+        - name: FLICKR_API_KEY
+          value: "3b8b1c4cd8b323056b031cfa5f8cf2d7"
+        - name: FLICKR_API_SECRET
+          value: "a87556ccc243b54c"
+        - name: FLICKR_TAG
+          value: "sunset"

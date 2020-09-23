@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ksphere-demo-photos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ksphere-demo-photos
+  template:
+    metadata:
+      labels:
+        app: ksphere-demo-photos
+    spec:
+      containers:
+      - image: "$({ .imageName })"
+        name: ksphere-demo-photos
+        command: ["python"]
+        args: ["photos.py"]
+        env:
+        - name: LD_LIBRARY_PATH
+          value: "/usr/local/lib"
+        - name: MINIO_EXTERNAL_ENDPOINT
+          value: "http://10.248.40.245:9000"
+        - name: MINIO_ENDPOINT
+          value: "http://minio-service.default.svc.cluster.local:9000"
+        - name: MINIO_USERNAME
+          value: "minio"
+        - name: MINIO_BUCKET
+          value: "images"
+        - name: MINIO_PASSWORD
+          value: "minio123"
+        - name: CASSANDRA_ENDPOINT
+          value: "cassandra-node-0.cassandra-svc.default.svc.cluster.local"
+        - name: CASSANDRA_KEYSPACE
+          value: "images"
+        - name: KAFKA_BROKER
+          value: "kafka-kafka-0.kafka-svc.default.svc.cluster.local:9092"
